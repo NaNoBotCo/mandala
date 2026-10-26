@@ -15,8 +15,8 @@ const relabel = () => { const now = performance.now(); cells.forEach(c => { c.d 
 relabel(); cells.forEach(c => { c.shown = c.d; });
 const geom = () => { const s = Math.min(st.w / (Math.sqrt(3) * (2 * N + 1.2)), st.h / (1.5 * (2 * N) + 2.4)); return { s, cx: st.w / 2, cy: st.h / 2 }; };
 const pos = (c, g) => ({ x: g.cx + g.s * Math.sqrt(3) * (c.q + c.r / 2), y: g.cy + g.s * 1.5 * c.r });
-st.draw = (t = 0) => {
-  const ctx = st.ctx, w = st.w, h = st.h; const dt = Math.min(0.05, t - last || 0.016); last = t; const now = performance.now();
+st.draw = (t = st.t) => {
+  const ctx = st.ctx, w = st.w, h = st.h; const dt = Math.max(0, Math.min(0.05, t - last || 0.016)); last = t; const now = performance.now();
   ctx.fillStyle = '#100c2e'; ctx.fillRect(0, 0, w, h);
   const g = geom();
   for (const c of cells) {

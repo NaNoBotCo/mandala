@@ -41,8 +41,8 @@ const paintStroke = (ctx, sk) => {
   }
 };
 
-st.draw = (t = 0) => {
-  const ctx = st.ctx, w = st.w, h = st.h; const dt = Math.min(0.05, t - last || 0.016); last = t;
+st.draw = (t = st.t) => {
+  const ctx = st.ctx, w = st.w, h = st.h; const dt = Math.max(0, Math.min(0.05, t - last || 0.016)); last = t;
   if (spinning && !M.RM) rot += dt * 0.35;
   const dark = matchMedia('(prefers-color-scheme: dark)').matches && document.documentElement.dataset.theme !== 'light' || document.documentElement.dataset.theme === 'dark';
   ctx.fillStyle = dark ? '#18123a' : '#fdf3df'; ctx.fillRect(0, 0, w, h);

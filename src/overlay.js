@@ -66,8 +66,8 @@ const label = (ctx, txt, x, y, col, u) => { ctx.font = M.font(Math.max(12, u * 0
 const office = (ctx, x, y, s, col) => { ctx.fillStyle = col; ctx.fillRect(x - s, y - s * 0.6, s * 2, s * 1.2); ctx.beginPath(); ctx.moveTo(x - s * 1.2, y - s * 0.6); ctx.lineTo(x, y - s * 1.3); ctx.lineTo(x + s * 1.2, y - s * 0.6); ctx.fill(); };
 const star = (ctx, x, y, r, col) => { ctx.fillStyle = col; ctx.beginPath(); for (let i = 0; i < 10; i++) { const a = -Math.PI / 2 + i * Math.PI / 5, rr = i % 2 ? r * 0.45 : r; ctx.lineTo(x + Math.cos(a) * rr, y + Math.sin(a) * rr); } ctx.closePath(); ctx.fill(); };
 
-st.draw = (t = 0) => {
-  const ctx = st.ctx, W = st.w, H = st.h, u = Math.min(W, H); const dt = Math.min(0.05, t - last || 0.016); last = t;
+st.draw = (t = st.t) => {
+  const ctx = st.ctx, W = st.w, H = st.h, u = Math.min(W, H); const dt = Math.max(0, Math.min(0.05, t - last || 0.016)); last = t;
   const g = ctx.createLinearGradient(0, 0, 0, H); g.addColorStop(0, '#0d1a2a'); g.addColorStop(1, '#13261d'); ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
   fields.forEach(f => { ctx.fillStyle = `rgba(${90 + f.g * 60},${150 + f.g * 60},70,.13)`; ctx.fillRect(f.x * W, f.y * H, f.w * W, f.h * H); });
   // hills along the top

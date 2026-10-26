@@ -14,8 +14,8 @@ for (let i = 0; i < 39; i++) { const k = i % 3; towns.push({ k, orb: 0.07 + R() 
 let last = 0, lastJudge = 0;
 
 const kpos = (k, t) => ({ x: k.hx + Math.cos(t * 0.13 + k.ph) * 0.02, y: k.hy + Math.sin(t * 0.11 + k.ph) * 0.02 });
-st.draw = (t = 0) => {
-  const ctx = st.ctx, w = st.w, h = st.h, u = Math.min(w, h); const dt = Math.min(0.05, t - last || 0.016); last = t;
+st.draw = (t = st.t) => {
+  const ctx = st.ctx, w = st.w, h = st.h, u = Math.min(w, h); const dt = Math.max(0, Math.min(0.05, t - last || 0.016)); last = t;
   ctx.fillStyle = '#0d0a26'; ctx.fillRect(0, 0, w, h);
   kings.forEach(k => { k.m += (k.target - k.m) * Math.min(1, dt * (k.target > k.m ? 0.35 : 1.5)); k.p = kpos(k, t); });
   // who pulls hardest? asked a few times a second, with a little stubbornness
@@ -53,11 +53,11 @@ st.draw = (t = 0) => {
 const strongest = () => { const n = [0, 0, 0]; towns.forEach(tw => n[tw.k]++); return n.indexOf(Math.max(...n)); };
 root.querySelector('[data-k=die]').onclick = () => {
   const i = kings.findIndex(k => k.target >= 1 && kings.indexOf(k) === strongest()) >= 0 ? strongest() : kings.findIndex(k => k.target >= 1);
-  if (i < 0) return; kings[i].target = 0.12; M.gong(); out.textContent = M.fmt(M.T('orbits.dieMsg', "The {k}'s light goes dim. His towns start looking around."), { k: names[i] }); st.kick();
+  if (i < 0) return; kings[i].target = 0.12; M.gong(); st.kick(4000); out.textContent = M.fmt(M.T('orbits.dieMsg', "The {k}'s light goes dim. His towns start looking around."), { k: names[i] }); st.kick();
 };
 root.querySelector('[data-k=rise]').onclick = () => {
   const i = kings.findIndex(k => k.target < 1); if (i < 0) { out.textContent = M.T('orbits.allStrong', 'Everybody is strong right now.'); return; }
-  kings[i].target = 1.5; M.bell(784, 1.8, 0.1); M.burst(kings[i].p.x * st.w, kings[i].p.y * st.h, kings[i].c, 30);
+  kings[i].target = 1.5; st.kick(4000); M.bell(784, 1.8, 0.1); M.burst(kings[i].p.x * st.w, kings[i].p.y * st.h, kings[i].c, 30);
   out.textContent = M.fmt(M.T('orbits.riseMsg', 'A new {k} shows what he has. Towns come back round.'), { k: names[i] });
   setTimeout(() => { if (kings[i].target === 1.5) kings[i].target = 1; }, 9000);
 };

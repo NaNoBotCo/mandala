@@ -228,11 +228,13 @@ const M = window.MANDALA; const V = window.V || {};
 
 // dialect switch: remember the choice, go to that page
 const dial = document.getElementById('dialect');
-if (dial) dial.addEventListener('change', () => {
-  const o = dial.selectedOptions[0];
-  try { localStorage.setItem('mandala-voice', o.dataset.v); } catch (e) {}
-  location.href = o.value + location.hash;
-});
+if (dial) {
+  const start = dial.value; let byKey = false, pending = false;
+  const go = () => { if (dial.value === start) return; const o = dial.selectedOptions[0]; try { localStorage.setItem('mandala-voice', o.dataset.v); } catch (e) {} location.href = o.value + location.hash; };
+  dial.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); go(); } else if (/^(Arrow|Home|End|Page)/.test(e.key)) byKey = true; });
+  dial.addEventListener('change', () => { if (byKey) { pending = true; byKey = false; } else go(); });
+  dial.addEventListener('blur', () => { if (pending) go(); });
+}
 
 // read aloud, in the page's own language where the device has a voice for it
 const synth = window.speechSynthesis;
@@ -415,8 +417,8 @@ const paintStroke = (ctx, sk) => {
   }
 };
 
-st.draw = (t = 0) => {
-  const ctx = st.ctx, w = st.w, h = st.h; const dt = Math.min(0.05, t - last || 0.016); last = t;
+st.draw = (t = st.t) => {
+  const ctx = st.ctx, w = st.w, h = st.h; const dt = Math.max(0, Math.min(0.05, t - last || 0.016)); last = t;
   if (spinning && !M.RM) rot += dt * 0.35;
   const dark = matchMedia('(prefers-color-scheme: dark)').matches && document.documentElement.dataset.theme !== 'light' || document.documentElement.dataset.theme === 'dark';
   ctx.fillStyle = dark ? '#18123a' : '#fdf3df'; ctx.fillRect(0, 0, w, h);
@@ -496,8 +498,8 @@ const relabel = () => { const now = performance.now(); cells.forEach(c => { c.d 
 relabel(); cells.forEach(c => { c.shown = c.d; });
 const geom = () => { const s = Math.min(st.w / (Math.sqrt(3) * (2 * N + 1.2)), st.h / (1.5 * (2 * N) + 2.4)); return { s, cx: st.w / 2, cy: st.h / 2 }; };
 const pos = (c, g) => ({ x: g.cx + g.s * Math.sqrt(3) * (c.q + c.r / 2), y: g.cy + g.s * 1.5 * c.r });
-st.draw = (t = 0) => {
-  const ctx = st.ctx, w = st.w, h = st.h; const dt = Math.min(0.05, t - last || 0.016); last = t; const now = performance.now();
+st.draw = (t = st.t) => {
+  const ctx = st.ctx, w = st.w, h = st.h; const dt = Math.max(0, Math.min(0.05, t - last || 0.016)); last = t; const now = performance.now();
   ctx.fillStyle = '#100c2e'; ctx.fillRect(0, 0, w, h);
   const g = geom();
   for (const c of cells) {
@@ -561,8 +563,8 @@ const renderField = () => {
   tally.innerHTML = kings.map((k, i) => `<span style="--c:${k.c}"><i></i>${names[i]} <b>${M.num(n[i])}</b></span>`).join('') + `<span class="two"><i></i>${M.T('lights.two', 'Two skies')} <b>${M.num(two)}</b></span>`;
 };
 st.onresize = () => { dirty = true; };
-st.draw = (t = 0) => {
-  const ctx = st.ctx, w = st.w, h = st.h; const dt = Math.min(0.05, t - last || 0.016); last = t;
+st.draw = (t = st.t) => {
+  const ctx = st.ctx, w = st.w, h = st.h; const dt = Math.max(0, Math.min(0.05, t - last || 0.016)); last = t;
   if (dirty) renderField();
   ctx.fillStyle = '#0f0b2c'; ctx.fillRect(0, 0, w, h);
   ctx.imageSmoothingEnabled = true; ctx.drawImage(field, 0, 0, w, h);
@@ -675,8 +677,8 @@ const setText = () => {
   lvTitle.textContent = M.num(level + 1) + ' · ' + LV[level].name; out.textContent = LV[level].line;
   back.hidden = level === 0;
 };
-st.draw = (t = 0) => {
-  const ctx = st.ctx, w = st.w, h = st.h; const dt = Math.min(0.05, t - last || 0.016); last = t;
+st.draw = (t = st.t) => {
+  const ctx = st.ctx, w = st.w, h = st.h; const dt = Math.max(0, Math.min(0.05, t - last || 0.016)); last = t;
   ctx.fillStyle = '#0f0b2c'; ctx.fillRect(0, 0, w, h);
   if (zoom) {
     const k = Math.min(1, (performance.now() - zoom.t0) / (M.RM ? 1 : 950)); const c = C();
@@ -815,8 +817,8 @@ for (let i = 0; i < 39; i++) { const k = i % 3; towns.push({ k, orb: 0.07 + R() 
 let last = 0, lastJudge = 0;
 
 const kpos = (k, t) => ({ x: k.hx + Math.cos(t * 0.13 + k.ph) * 0.02, y: k.hy + Math.sin(t * 0.11 + k.ph) * 0.02 });
-st.draw = (t = 0) => {
-  const ctx = st.ctx, w = st.w, h = st.h, u = Math.min(w, h); const dt = Math.min(0.05, t - last || 0.016); last = t;
+st.draw = (t = st.t) => {
+  const ctx = st.ctx, w = st.w, h = st.h, u = Math.min(w, h); const dt = Math.max(0, Math.min(0.05, t - last || 0.016)); last = t;
   ctx.fillStyle = '#0d0a26'; ctx.fillRect(0, 0, w, h);
   kings.forEach(k => { k.m += (k.target - k.m) * Math.min(1, dt * (k.target > k.m ? 0.35 : 1.5)); k.p = kpos(k, t); });
   // who pulls hardest? asked a few times a second, with a little stubbornness
@@ -854,11 +856,11 @@ st.draw = (t = 0) => {
 const strongest = () => { const n = [0, 0, 0]; towns.forEach(tw => n[tw.k]++); return n.indexOf(Math.max(...n)); };
 root.querySelector('[data-k=die]').onclick = () => {
   const i = kings.findIndex(k => k.target >= 1 && kings.indexOf(k) === strongest()) >= 0 ? strongest() : kings.findIndex(k => k.target >= 1);
-  if (i < 0) return; kings[i].target = 0.12; M.gong(); out.textContent = M.fmt(M.T('orbits.dieMsg', "The {k}'s light goes dim. His towns start looking around."), { k: names[i] }); st.kick();
+  if (i < 0) return; kings[i].target = 0.12; M.gong(); st.kick(4000); out.textContent = M.fmt(M.T('orbits.dieMsg', "The {k}'s light goes dim. His towns start looking around."), { k: names[i] }); st.kick();
 };
 root.querySelector('[data-k=rise]').onclick = () => {
   const i = kings.findIndex(k => k.target < 1); if (i < 0) { out.textContent = M.T('orbits.allStrong', 'Everybody is strong right now.'); return; }
-  kings[i].target = 1.5; M.bell(784, 1.8, 0.1); M.burst(kings[i].p.x * st.w, kings[i].p.y * st.h, kings[i].c, 30);
+  kings[i].target = 1.5; st.kick(4000); M.bell(784, 1.8, 0.1); M.burst(kings[i].p.x * st.w, kings[i].p.y * st.h, kings[i].c, 30);
   out.textContent = M.fmt(M.T('orbits.riseMsg', 'A new {k} shows what he has. Towns come back round.'), { k: names[i] });
   setTimeout(() => { if (kings[i].target === 1.5) kings[i].target = 1; }, 9000);
 };
@@ -919,8 +921,8 @@ const setYear = y => {
   year = Math.round(y); yr.value = year; yearOut.textContent = M.yearLabel(year);
   let ny = null; for (const n of noteYears) if (n <= year) ny = n; note.textContent = ny != null ? NOTES[ny] : '';
 };
-st.draw = (t = 0) => {
-  const ctx = st.ctx, w = st.w, h = st.h; const dt = Math.min(0.05, t - last || 0.016); last = t;
+st.draw = (t = st.t) => {
+  const ctx = st.ctx, w = st.w, h = st.h; const dt = Math.max(0, Math.min(0.05, t - last || 0.016)); last = t;
   if (playing) { setYear(Math.min(2026, year + dt * 55)); if (year >= 2026) { playing = false; play.setAttribute('aria-pressed', false); } }
   ctx.fillStyle = '#081129'; ctx.fillRect(0, 0, w, h);
   const s = Math.min(w / G.w, h / G.h) * 1.0; const ox = (w - G.w * s) / 2, oy = (h - G.h * s) / 2;
@@ -1033,8 +1035,8 @@ const label = (ctx, txt, x, y, col, u) => { ctx.font = M.font(Math.max(12, u * 0
 const office = (ctx, x, y, s, col) => { ctx.fillStyle = col; ctx.fillRect(x - s, y - s * 0.6, s * 2, s * 1.2); ctx.beginPath(); ctx.moveTo(x - s * 1.2, y - s * 0.6); ctx.lineTo(x, y - s * 1.3); ctx.lineTo(x + s * 1.2, y - s * 0.6); ctx.fill(); };
 const star = (ctx, x, y, r, col) => { ctx.fillStyle = col; ctx.beginPath(); for (let i = 0; i < 10; i++) { const a = -Math.PI / 2 + i * Math.PI / 5, rr = i % 2 ? r * 0.45 : r; ctx.lineTo(x + Math.cos(a) * rr, y + Math.sin(a) * rr); } ctx.closePath(); ctx.fill(); };
 
-st.draw = (t = 0) => {
-  const ctx = st.ctx, W = st.w, H = st.h, u = Math.min(W, H); const dt = Math.min(0.05, t - last || 0.016); last = t;
+st.draw = (t = st.t) => {
+  const ctx = st.ctx, W = st.w, H = st.h, u = Math.min(W, H); const dt = Math.max(0, Math.min(0.05, t - last || 0.016)); last = t;
   const g = ctx.createLinearGradient(0, 0, 0, H); g.addColorStop(0, '#0d1a2a'); g.addColorStop(1, '#13261d'); ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
   fields.forEach(f => { ctx.fillStyle = `rgba(${90 + f.g * 60},${150 + f.g * 60},70,.13)`; ctx.fillRect(f.x * W, f.y * H, f.w * W, f.h * H); });
   // hills along the top
