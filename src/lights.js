@@ -33,8 +33,8 @@ const renderField = () => {
   tally.innerHTML = kings.map((k, i) => `<span style="--c:${k.c}"><i></i>${names[i]} <b>${M.num(n[i])}</b></span>`).join('') + `<span class="two"><i></i>${M.T('lights.two', 'Two skies')} <b>${M.num(two)}</b></span>`;
 };
 st.onresize = () => { dirty = true; };
-st.draw = (t = 0) => {
-  const ctx = st.ctx, w = st.w, h = st.h; const dt = Math.min(0.05, t - last || 0.016); last = t;
+st.draw = (t = st.t) => {
+  const ctx = st.ctx, w = st.w, h = st.h; const dt = Math.max(0, Math.min(0.05, t - last || 0.016)); last = t;
   if (dirty) renderField();
   ctx.fillStyle = '#0f0b2c'; ctx.fillRect(0, 0, w, h);
   ctx.imageSmoothingEnabled = true; ctx.drawImage(field, 0, 0, w, h);

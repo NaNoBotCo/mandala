@@ -47,8 +47,8 @@ const setYear = y => {
   year = Math.round(y); yr.value = year; yearOut.textContent = M.yearLabel(year);
   let ny = null; for (const n of noteYears) if (n <= year) ny = n; note.textContent = ny != null ? NOTES[ny] : '';
 };
-st.draw = (t = 0) => {
-  const ctx = st.ctx, w = st.w, h = st.h; const dt = Math.min(0.05, t - last || 0.016); last = t;
+st.draw = (t = st.t) => {
+  const ctx = st.ctx, w = st.w, h = st.h; const dt = Math.max(0, Math.min(0.05, t - last || 0.016)); last = t;
   if (playing) { setYear(Math.min(2026, year + dt * 55)); if (year >= 2026) { playing = false; play.setAttribute('aria-pressed', false); } }
   ctx.fillStyle = '#081129'; ctx.fillRect(0, 0, w, h);
   const s = Math.min(w / G.w, h / G.h) * 1.0; const ox = (w - G.w * s) / 2, oy = (h - G.h * s) / 2;

@@ -59,8 +59,8 @@ const setText = () => {
   lvTitle.textContent = M.num(level + 1) + ' · ' + LV[level].name; out.textContent = LV[level].line;
   back.hidden = level === 0;
 };
-st.draw = (t = 0) => {
-  const ctx = st.ctx, w = st.w, h = st.h; const dt = Math.min(0.05, t - last || 0.016); last = t;
+st.draw = (t = st.t) => {
+  const ctx = st.ctx, w = st.w, h = st.h; const dt = Math.max(0, Math.min(0.05, t - last || 0.016)); last = t;
   ctx.fillStyle = '#0f0b2c'; ctx.fillRect(0, 0, w, h);
   if (zoom) {
     const k = Math.min(1, (performance.now() - zoom.t0) / (M.RM ? 1 : 950)); const c = C();

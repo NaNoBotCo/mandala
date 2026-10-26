@@ -41,7 +41,7 @@ def md(s):
     s = html.escape(s, quote=False)
     s = re.sub(r"\*\*(.+?)\*\*", r"<b>\1</b>", s)
     s = re.sub(r"(?<![\w*])\*([^*\s][^*]*?)\*(?![\w*])", r"<i>\1</i>", s)
-    return re.sub(r"\[([^\]]+)\]\((https?://[^)\s]+)\)", r'<a href="\2">\1</a>', s)
+    return re.sub(r"\[([^\]]+)\]\((https?://(?:[^()\s]|\([^()\s]*\))+)\)", r'<a href="\2">\1</a>', s)
 
 
 def esc(s):
@@ -61,8 +61,8 @@ def band(key, v, rel):
     if not p or not b:
         return ""
     pos = f' style="object-position:{p["pos"]}"' if p.get("pos") else ""
-    return (f'<div class="band{" right" if b.get("right") else ""}" role="img" aria-label="{esc(b["alt"])}">'
-            f'<div class="bgwrap"><img data-src="{rel}img/{p["file"]}" alt=""{pos}></div>'
+    return (f'<div class="band{" right" if b.get("right") else ""}">'
+            f'<div class="bgwrap"><img data-src="{rel}img/{p["file"]}" alt="{esc(b["alt"])}"{pos}></div>'
             f'<div class="in"><p class="bh">{md(b["head"])}</p></div><span class="cred">{credit(p)}</span></div>')
 
 
@@ -134,7 +134,7 @@ def page(key, v, all_v):
                     f'<figcaption><b>{md(c["h"])}</b><span>{md(c["p"])}</span><small>{credit(PICS[c["pic"]])}</small></figcaption></figure>' for c in v["visit"]["cards"])
     words = "".join(f'<div class="word"><dt>{md(a)}</dt><dd>{md(b)}</dd></div>' for a, b in v["words"]["list"])
     srcs = "".join(f"<li>{md(s)}</li>" for s in SOURCES)
-    alts = "" if ART else "".join(f'<link rel="alternate" hreflang="{all_v[k]["lang"]}" href="{SITE}/{all_v[k]["path"]}">' for k in ORDER)
+    alts = "" if ART else "".join(f'<link rel="alternate" hreflang="{all_v[k]["lang"]}" href="{SITE}/{all_v[k]["path"]}">' for k in ORDER if k != "genz")
     pick = ""
     if key == "us" and not ART:
         pick = f"<script>(function(){{var v=({PICKV})();if(v!=='us')location.replace(location.pathname.replace(/[^/]*$/,'')+v+'/'+location.hash)}})();</script>\n"

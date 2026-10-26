@@ -5,11 +5,13 @@ const M = window.MANDALA; const V = window.V || {};
 
 // dialect switch: remember the choice, go to that page
 const dial = document.getElementById('dialect');
-if (dial) dial.addEventListener('change', () => {
-  const o = dial.selectedOptions[0];
-  try { localStorage.setItem('mandala-voice', o.dataset.v); } catch (e) {}
-  location.href = o.value + location.hash;
-});
+if (dial) {
+  const start = dial.value; let byKey = false, pending = false;
+  const go = () => { if (dial.value === start) return; const o = dial.selectedOptions[0]; try { localStorage.setItem('mandala-voice', o.dataset.v); } catch (e) {} location.href = o.value + location.hash; };
+  dial.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); go(); } else if (/^(Arrow|Home|End|Page)/.test(e.key)) byKey = true; });
+  dial.addEventListener('change', () => { if (byKey) { pending = true; byKey = false; } else go(); });
+  dial.addEventListener('blur', () => { if (pending) go(); });
+}
 
 // read aloud, in the page's own language where the device has a voice for it
 const synth = window.speechSynthesis;
