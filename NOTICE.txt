@@ -1,0 +1,17 @@
+Mandala · The Circle Kings — what is in this repository, and under what terms.
+
+CODE — src/, tools/, publish.sh
+    SPDX-License-Identifier: MIT — see LICENSE-CODE.
+
+TEXT AND DRAWINGS — the pages in docs/, the copy in tools/voices/, card-*.jpg, README.md
+    SPDX-License-Identifier: CC-BY-4.0 — see LICENSE. Credit line: "NaNoBotCo · CC BY 4.0",
+    with a link to https://nanobotco.github.io/mandala/ .
+    Every mandala is drawn in the browser by src/core.js from a seed.
+
+MAP OUTLINES — src/geo.js
+    Natural Earth 1:50m admin-0 countries, public domain, cut and simplified by tools/geo.py.
+
+PHOTOGRAPHS — docs/img/
+    From Wikimedia Commons. Each keeps its own licence, credited on the page where it is shown and listed in data/pictures.json.
+
+SOURCES — data/sources.json, listed on every page.

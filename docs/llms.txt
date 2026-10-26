@@ -1,0 +1,10 @@
+# The Circle Kings
+
+> The Southeast Asian mandala political system: kingdoms as circles of light from a centre (Kautilya's word, brought into Southeast Asian history by O. W. Wolters), tribute up and protection down, towns with two overlords, power that rose and fell with the ruler; then 1800s mapping drew borders (Thongchai Winichakul, Siam Mapped), and Siam named its new provinces monthon, the same word. Last part: northern Thai village politics read as the old circles still running under the provinces. Dialects: Southern US English, Australian English, Kham Mueang (northern Thai), rural Marathi, Gen Z English. Toys: mandala maker with sand sweep, Kautilya's circle on a honeycomb, three kings and their villages, kings inside kings, a tribute game, orbits that wobble when a king dies, kingdoms as lights on a map from 600 to 2026, a valley drawn as offices and as people.
+
+- [English](https://nanobotco.github.io/mandala/)
+- [Aussie](https://nanobotco.github.io/mandala/bogan/)
+- [คำเมือง](https://nanobotco.github.io/mandala/lanna/)
+- [मराठी](https://nanobotco.github.io/mandala/marathi/)
+- [Gen Z](https://nanobotco.github.io/mandala/genz/)
+- Text CC BY 4.0, NaNoBotCo. Code MIT. Photographs from Wikimedia Commons keep their own licences, credited on each.

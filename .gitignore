@@ -1,0 +1,6 @@
+data/ne_50m.geojson
+img-src/
+.DS_Store
+__pycache__/
+build/
+research/
